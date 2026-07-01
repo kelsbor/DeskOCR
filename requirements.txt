@@ -1,0 +1,6 @@
+manga-ocr
+jamdict
+jamdict-data
+janome
+pystray
+pillow
