@@ -18,6 +18,7 @@ To ensure instant screen captures, DeskOCR uses a client-server architecture:
 * **UI & System Integration:** `tkinter` (UI), `pystray` (System Tray), `socket` (IPC), Systemd (Daemon management).
 * **OCR Engine:** `manga-ocr` (Transformer-based optical character recognition).
 * **NLP & Dictionary:** `janome` (Morphological analysis/tokenization), `jamdict` (JMdict and KanjiDic2 querying).
+* **Translation:** `deep-translator` (Google Translate for phrase translation).
 * **Display Server Support:** X11 and Wayland.
 
 ## 🚀 Installation Guide

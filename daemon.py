@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 from manga_ocr import MangaOcr
 from janome.tokenizer import Tokenizer
 from jamdict import Jamdict
+from deep_translator import GoogleTranslator  # New Import
 
 # path logic
 RUNTIME_DIR = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
@@ -19,6 +20,7 @@ def iniciar_servidor_socket():
     mocr = MangaOcr()
     tokenizer = Tokenizer()
     jam = Jamdict()
+    translator = GoogleTranslator(source='ja', target='en')
     print("Modelos carregados. Servidor pronto.")
 
     if os.path.exists(SOCKET_PATH):
@@ -55,17 +57,26 @@ def iniciar_servidor_socket():
                 if resultado.entries:
                     entrada = resultado.entries[0]
                     leitura = entrada.kana_forms[0].text if entrada.kana_forms else termo_busca
-                    significado = entrada.senses[0].gloss[0].text if entrada.senses else ""
                     
+                    significados = []
+                    for i, sense in enumerate(entrada.senses[:3], 1):
+                        gloss_text = ", ".join([g.text for g in sense.gloss])
+                        significados.append(f"{i}. {gloss_text}")
+                    
+                    significado_final = " | ".join(significados)
+
                     palavras_processadas.append({
                         "termo": termo_busca,
                         "leitura": leitura,
-                        "significado": significado
+                        "significado": significado_final
                     })
             
+            traducao_completa = translator.translate(texto_ocr)
             resposta = {
                 "frase_original": texto_ocr,
+                "traducao": traducao_completa,
                 "detalhes": palavras_processadas
+                
             }
             conn.send(json.dumps(resposta, ensure_ascii=False).encode('utf-8'))
 

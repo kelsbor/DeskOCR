@@ -4,3 +4,4 @@ jamdict-data
 janome
 pystray
 pillow
+deep-translator

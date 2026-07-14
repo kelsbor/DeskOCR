@@ -52,12 +52,11 @@ def consultar_daemon():
 def exibir_interface(dados):
     root = tk.Tk()
     root.title("DeskOCR")
-    root.geometry("450x400")
+    root.geometry("450x450")
     root.attributes("-topmost", True)
     
     # Use "sans" to let the OS fontconfig select the best CJK fallback
     fonte_base = ("sans", 12)
-    
     text_area = tk.Text(root, wrap=tk.WORD, padx=20, pady=20, font=fonte_base, bg="#1e1e2e", fg="#cdd6f4")
     text_area.pack(expand=True, fill=tk.BOTH)
 
@@ -65,10 +64,14 @@ def exibir_interface(dados):
         text_area.insert(tk.END, dados["erro"])
     else:
         text_area.insert(tk.END, f"{dados.get('frase_original', '')}\n", "titulo")
+        if "traducao" in dados:
+            text_area.insert(tk.END, f"{dados['traducao']}\n", "traducao")
+
         text_area.insert(tk.END, "─" * 40 + "\n\n", "linha")
         
         # Remove "italic" and rely on OS fallback font (sans)
         text_area.tag_config("titulo", font=("sans", 16, "bold"), foreground="#f38ba8", justify="center")
+        text_area.tag_config("traducao", font=("sans", 13, "italic"), foreground="#f9e2af", justify="center")
         text_area.tag_config("linha", foreground="#45475a", justify="center")
         text_area.tag_config("termo", font=("sans", 14, "bold"), foreground="#89b4fa")
         text_area.tag_config("leitura", font=("sans", 12), foreground="#a6e3a1") # Italic removed
