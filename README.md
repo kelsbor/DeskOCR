@@ -6,7 +6,7 @@ DeskOCR is a lightweight, system-native Japanese OCR and dictionary lookup tool 
 
 Built for window managers (like AwesomeWM) and desktop environments across both X11 and Wayland, it allows users to instantly freeze their screen, select a region of Japanese text, and receive a parsed breakdown of the characters, readings, and definitions via a minimal UI.
 
-## ⚙️ How It Works (Architecture)
+## ⚙️ How It Works
 
 To ensure instant screen captures, DeskOCR uses a client-server architecture:
 * **The Daemon (`daemon.py`):** Runs continuously in the background via a systemd user service. It keeps heavy machine-learning OCR models and dictionary databases loaded in memory. It also hosts a system tray icon for easy lifecycle management.
