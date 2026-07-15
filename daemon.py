@@ -15,6 +15,14 @@ from deep_translator import GoogleTranslator  # New Import
 RUNTIME_DIR = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
 SOCKET_PATH = os.path.join(RUNTIME_DIR, "deskocr.sock")
 
+# Convert katakana to hiragana 
+def katakana_para_hiragana(texto):
+    """Converts Katakana output from Janome into standard Hiragana."""
+    if not texto or texto == '*':
+        return ""
+    # Shifts the Unicode codepoint of Katakana characters to their Hiragana equivalents
+    return "".join([chr(ord(ch) - 96) if 0x30A1 <= ord(ch) <= 0x30F6 else ch for ch in texto])
+
 def iniciar_servidor_socket():
     print("Carregando modelos (IA, Tokenizer, Dicionário)...")
     mocr = MangaOcr()
@@ -48,6 +56,9 @@ def iniciar_servidor_socket():
                 palavra_dicionario = token.base_form
                 classe = token.part_of_speech
                 
+                # Extract and convert contextual reading from Janome
+                leitura_contextual = katakana_para_hiragana(token.reading)
+                
                 if "記号" in classe or "助詞" in classe or "助動詞" in classe:
                     continue
                 
@@ -56,7 +67,19 @@ def iniciar_servidor_socket():
                 
                 if resultado.entries:
                     entrada = resultado.entries[0]
-                    leitura = entrada.kana_forms[0].text if entrada.kana_forms else termo_busca
+
+                    # 1. Trust Janome's contextual reading first.
+                    # 2. If Janome fails (returns empty), fallback to Jamdict's default dictionary reading.
+                    # 3. If Jamdict also has no reading, fallback to the search term itself.
+
+                    if leitura_contextual:
+                        print("Using janome")
+                        leitura = leitura_contextual
+                    elif entrada.kana_forms:
+                        print("Using Jamdict")
+                        leitura = entrada.kana_forms[0].text
+                    else:
+                        leitura = termo_busca
                     
                     significados = []
                     for i, sense in enumerate(entrada.senses[:3], 1):
@@ -113,8 +136,6 @@ def on_quit(icon, item):
 def iniciar_system_tray():
     
     image = Image.open("logo.ico")
-    # Removed 'default=True'. 
-    # Now, left/right clicking the icon will properly open the menu on AwesomeWM.
     menu = pystray.Menu(
         pystray.MenuItem('Capture Screen', on_capture),
         pystray.MenuItem('Quit DeskOCR', on_quit)
