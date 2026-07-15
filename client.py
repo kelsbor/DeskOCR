@@ -54,10 +54,17 @@ def exibir_interface(dados):
     root.title("DeskOCR")
     root.geometry("450x450")
     root.attributes("-topmost", True)
-    
+
     # Use "sans" to let the OS fontconfig select the best CJK fallback
     fonte_base = ("sans", 12)
-    text_area = tk.Text(root, wrap=tk.WORD, padx=20, pady=20, font=fonte_base, bg="#1e1e2e", fg="#cdd6f4")
+    text_area = tk.Text(root, wrap=tk.WORD, padx=20, pady=20, font=fonte_base, 
+        bg="#1e1e2e", 
+        fg="#cdd6f4",
+        borderwidth=0,
+        highlightthickness=0,
+        relief="flat"
+    )
+
     text_area.pack(expand=True, fill=tk.BOTH)
 
     if "erro" in dados:
@@ -85,7 +92,7 @@ def exibir_interface(dados):
     root.clipboard_append(dados.get("frase_original", ""))
     text_area.config(state=tk.DISABLED)
     root.bind("<Escape>", lambda e: root.destroy())
-    
+
     root.mainloop()
 
 if __name__ == "__main__":

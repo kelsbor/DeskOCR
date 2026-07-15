@@ -12,7 +12,7 @@ To ensure instant screen captures, DeskOCR uses a client-server architecture:
 * **The Daemon (`daemon.py`):** Runs continuously in the background via a systemd user service. It keeps heavy machine-learning OCR models and dictionary databases loaded in memory. It also hosts a system tray icon for easy lifecycle management.
 * **The Client (`client.py`):** A lightweight trigger script meant to be bound to a keyboard shortcut. It utilizes native Linux screenshot tools (`maim` for X11, `slurp`/`grim` for Wayland) to grab a screen region and pipes the image to the daemon via a Unix socket. 
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * **Language:** Python 3
 * **UI & System Integration:** `tkinter` (UI), `pystray` (System Tray), `socket` (IPC), Systemd (Daemon management).
@@ -21,7 +21,7 @@ To ensure instant screen captures, DeskOCR uses a client-server architecture:
 * **Translation:** `deep-translator` (Google Translate for phrase translation).
 * **Display Server Support:** X11 and Wayland.
 
-## 🚀 Installation Guide
+## Installation Guide
 
 ### 1. System Prerequisites
 Ensure you have the required system dependencies installed for your display server and font rendering:
